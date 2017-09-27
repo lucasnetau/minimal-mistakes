@@ -4,8 +4,6 @@ date:   2017-09-27 21:00:00
 category: smarthome
 tags: [openhab, myplace, myair]
 ---
-# Controlling the AdvantageAir MyPlace Air Conditioner control system through OpenHab
-
 ## Pre-Requisites 
  - MyPlace Controller
  - Openhab Installed (OpenHabian is a great ready to go distribution)
