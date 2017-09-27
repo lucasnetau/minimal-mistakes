@@ -1,7 +1,8 @@
 ---
 title:  "Controlling a AdvantageAir MyPlace controller from OpenHab"
 date:   2017-09-27 21:00:00
-categories: blog openhab myplace smarthome
+category: smarthome
+tags: [openhab, myplace, myair]
 ---
 # Controlling the AdvantageAir MyPlace Air Conditioner control system through OpenHab
 
@@ -114,14 +115,21 @@ Rules allow us to link widgets from the BasicUI to the MyPlace API. Rules are a 
 
 For example here is what the Air Conditioning ON/OFF switch (MyAir5_AC1_State) looks like when configured via the bindings. Due to the JSON string passed to setAircon we need to URL encode the parameter.
 
-So json={"ac1":{"info":{"state":"on"}}} becomes json=%7B%22ac1%22%3A%7B%22info%22%3A%7B%22state%22%3A%22on%22%7D%7D%7D
-
 ```sh
 Switch MyAir5_AC1_State "Ducted Heating Power" <climate> (gMyAir) {
 http="<[myAir5SystemDataJsonCache:2000:JS(myairAC1state.js)]
 >[ON:GET:http://myplaceip:2025/setAircon?json=%7B%22ac1%22%3A%7B%22info%22%3A%7B%22state%22%3A%22on%22%7D%7D%7D]
 >[OFF:GET:http://myplaceip:2025/setAircon?json=%7B%22ac1%22%3A%7B%22info%22%3A%7B%22state%22%3A%22off%22%7D%7D%7D]"
 }
+```
+
+So the simple command string:
+```sh
+json={"ac1":{"info":{"state":"on"}}}
+```
+becomes the url encoded mess:
+```sh
+json=%7B%22ac1%22%3A%7B%22info%22%3A%7B%22state%22%3A%22on%22%7D%7D%7D
 ```
 
 Let's create a new file $OPENHAB_CONF/rules/myair.rules for out rules. We create a variable myAirEndpoint to allow a single point in our rules to be updated if the MyPlace controller IP changes.
