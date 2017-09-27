@@ -1,5 +1,5 @@
 ---
-title:  "Controlling a AdvantageAir MyPlace controller from OpenHab"
+title:  "Controlling the AdvantageAir MyPlace controller from OpenHab"
 date:   2017-09-27 21:00:00
 category: smarthome
 tags: [openhab, myplace, myair]
