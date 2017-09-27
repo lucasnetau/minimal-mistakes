@@ -6,7 +6,7 @@ tags: [openhab, myplace, myair]
 ---
 ## Pre-Requisites 
  - MyPlace Controller
- - Openhab Installed (OpenHabian is a great ready to go distribution)
+ - Openhab Installed (OpenHabian is a great ready to go distribution) - Tested with version 2.1 & 2.2 beta
  - HTTP Binding (Version 1 Binding http://docs.openhab.org/addons/bindings/http1/readme.html) 
 
 The setup is simplified if a static IP address is assigned to your MyPlace system by your router rather than a dynamic IP.
