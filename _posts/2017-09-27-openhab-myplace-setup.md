@@ -1,7 +1,7 @@
 ---
 title:  "Controlling a AdvantageAir MyPlace controller from OpenHab"
 date:   2017-09-27 21:00:00
-categories: blog myplace openhab
+categories: blog openhab myplace smarthome
 ---
 # Controlling the AdvantageAir MyPlace Air Conditioner control system through OpenHab
 
