@@ -6,9 +6,9 @@ categories: blog openhab myplace smarthome
 # Controlling the AdvantageAir MyPlace Air Conditioner control system through OpenHab
 
 ## Pre-Requisites 
-MyPlace Controller
-Openhab Installed (OpenHabian is a great ready to go distribution) - Testing on OpenHab 2.1 & 2.2 (Beta).
-HTTP Binding (Version 1 Binding http://docs.openhab.org/addons/bindings/http1/readme.html) 
+ - MyPlace Controller
+ - Openhab Installed (OpenHabian is a great ready to go distribution)
+ - HTTP Binding (Version 1 Binding http://docs.openhab.org/addons/bindings/http1/readme.html) 
 
 The setup is simplified if a static IP address is assigned to your MyPlace system by your router rather than a dynamic IP.
 
@@ -22,11 +22,12 @@ Append to $OPENHAB_CONF/services/http.cfg
 format = false
 ```
 
-It is hoped that in a future release of the API that state changes are changed to HTTP POST
+It is hoped that in a future release of the API that state changes are changed to HTTP POST.
 
 ### Configure HTTP Cache Item
 The Advantage Air API has a single endpoint to query all system state. It is best to cache this query every 2 seconds (2000 milliseconds) to reduce the number of requests to the controller.
 
+Append to $OPENHAB_CONF/services/http.cfg
 ```sh
 myAir5SystemDataJsonCache.url=http://<MYAIRIP/Hostname>:2025/getSystemData
 myAir5SystemDataJsonCache.updateInterval=2000
@@ -53,7 +54,8 @@ JSON.parse(input)["aircons"]["ac1"]["info"].state.toUpperCase()
 
 Then create an switch item for this state in $OPENHAB_CONF/items/myair.items configuring it to load the state from the myAir5SystemDataJsonCache http cache and transform it using the transformation we created. 
 ```sh
-Switch MyAir5_AC1_State "Ducted Air Conditioner Power" <climate> (gMyAir) {  http="<[myAir5SystemDataJsonCache:3000:JS(myairAC1state.js)] 
+Switch MyAir5_AC1_State "Ducted Air Conditioner Power" <climate> (gMyAir) {
+http="<[myAir5SystemDataJsonCache:3000:JS(myairAC1state.js)] 
 }
 ```
 
@@ -87,16 +89,18 @@ Number MyAir5_AC1_SetTemp "MyZone" (gMyAir) { http="<[myAir5SystemDataJsonCache:
 ### Zone Configuration
 Zones can be configured in multiple ways. In this example we will look at two values temperature and setpoint. This assumes a MyZone setup. If you are using Return Air temperature then the setTemp value from the previous step will need to be used.
 
-Output for Zone 1 in getSystemData
+Output for Zone 1 in getSystemData:
+
 ```javascript
- "zones": {
+"zones": {
  "z01": {
- "name": "FREEGGVFUX", - Name of zone - max 12 displayed characters
- "setTemp": 25.0, - Set temperature of the zone - only valid when Zone type > 0.
- "state": "open", - State of the zone - can be "open" or "close". Note: that the
- "type": 0, - Readonly - Zone type - 0 means percentage (use value to change), any other number means it's temperature control, use setTemp.
- "value": 20 - Percentage value of zone - only valid when Zone type = 0.
+  "name": "FREEGGVFUX", - Name of zone - max 12 displayed characters
+  "setTemp": 25.0, - Set temperature of the zone - only valid when Zone type > 0.
+  "state": "open", - State of the zone - can be "open" or "close". Note: that the
+  "type": 0, - Readonly - Zone type - 0 means percentage (use value to change), any other number means it's temperature control, use setTemp.
+  "value": 20 - Percentage value of zone - only valid when Zone type = 0.
  }
+}
 ```
 
 Append to the file $OPENHAB_CONF/items/myair.items for each zone installed. Changeing z01 to the correct zone number.
@@ -113,7 +117,11 @@ For example here is what the Air Conditioning ON/OFF switch (MyAir5_AC1_State) l
 So json={"ac1":{"info":{"state":"on"}}} becomes json=%7B%22ac1%22%3A%7B%22info%22%3A%7B%22state%22%3A%22on%22%7D%7D%7D
 
 ```sh
-Switch MyAir5_AC1_State "Ducted Heating Power" <climate> (gMyAir) { http="<[myAir5SystemDataJsonCache:2000:JS(myairAC1state.js)] >[ON:GET:http://myplaceip:2025/setAircon?json=%7B%22ac1%22%3A%7B%22info%22%3A%7B%22state%22%3A%22on%22%7D%7D%7D] >[OFF:GET:http://myplaceip:2025/setAircon?json=%7B%22ac1%22%3A%7B%22info%22%3A%7B%22state%22%3A%22off%22%7D%7D%7D]" }
+Switch MyAir5_AC1_State "Ducted Heating Power" <climate> (gMyAir) {
+http="<[myAir5SystemDataJsonCache:2000:JS(myairAC1state.js)]
+>[ON:GET:http://myplaceip:2025/setAircon?json=%7B%22ac1%22%3A%7B%22info%22%3A%7B%22state%22%3A%22on%22%7D%7D%7D]
+>[OFF:GET:http://myplaceip:2025/setAircon?json=%7B%22ac1%22%3A%7B%22info%22%3A%7B%22state%22%3A%22off%22%7D%7D%7D]"
+}
 ```
 
 Let's create a new file $OPENHAB_CONF/rules/myair.rules for out rules. We create a variable myAirEndpoint to allow a single point in our rules to be updated if the MyPlace controller IP changes.
